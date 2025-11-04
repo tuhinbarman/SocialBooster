@@ -95,8 +95,8 @@ class UpdateCovidData(APIView):
         except Exception as err:
             print(err)
             response_data['message'] = 'fail'
-            response_data['data'] = msg
-            return Response(data = data,status=status.HTTP_500_INTERNAL_SERVER_ERROR )
+            response_data['data'] = 'Error occurred while getting data'
+            return Response(data = response_data,status=status.HTTP_500_INTERNAL_SERVER_ERROR )
 
 
     def put(self,request):
