@@ -3,6 +3,7 @@ from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import F
 from .models import StateCovidData
 from .webservice import ExternalService
 
@@ -72,6 +73,31 @@ class CovidData(APIView):
 
 
 class UpdateCovidData(APIView):
+
+
+    def get(self,request):
+        try:
+            
+            response_data = {}
+            state_data = StateCovidData.objects.all().values(
+                'discharged',
+                'deaths',
+                loc = F('state'),
+                confirmedCasesIndian = F('confirmed_cases_indian'),
+                confirmedCasesForeign = F('confirmed_cases_foreign'),
+                
+                totalConfirmed = F('total_confirmed')
+            )
+            response_data['message'] = 'success'
+            response_data['data'] = state_data
+            return Response(response_data,status=status.HTTP_200_OK)
+            
+        except Exception as err:
+            print(err)
+            response_data['message'] = 'fail'
+            response_data['data'] = msg
+            return Response(data = data,status=status.HTTP_500_INTERNAL_SERVER_ERROR )
+
 
     def put(self,request):
         try:
